@@ -74,9 +74,9 @@ export function GradientShapeStudio(): JSX.Element {
             <h2 className="text-lg font-bold mb-2 uppercase text-black">
               Couleurs + Alpha
             </h2>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
               {colors.map((color, index) => (
-                <div key={index} className="grid grid-cols-[1fr,100px] gap-2">
+                <div key={index} className="flex items-center gap-1">
                   <input
                     type="color"
                     value={color}
@@ -85,8 +85,9 @@ export function GradientShapeStudio(): JSX.Element {
                       newColors[index] = e.target.value;
                       setColors(newColors);
                     }}
+                    className="w-12 h-8"
                   />
-                  <div className="bg-white brutal-border-thin px-3 flex items-center justify-center font-bold">
+                  <div className="bg-white brutal-border-thin px-2 flex items-center justify-center font-bold text-xs flex-1">
                     <input
                       type="number"
                       min="0"
@@ -100,7 +101,7 @@ export function GradientShapeStudio(): JSX.Element {
                       className="w-full text-center border-0 bg-transparent"
                       style={{ outline: "none" }}
                     />
-                    <span className="ml-1">%</span>
+                    <span>%</span>
                   </div>
                 </div>
               ))}
