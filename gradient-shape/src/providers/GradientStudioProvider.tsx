@@ -87,20 +87,48 @@ export function GradientStudioProvider({
 }: GradientStudioProviderProps): JSX.Element {
   const canvasRef: RefObject<HTMLCanvasElement> =
     useRef<HTMLCanvasElement | null>(null);
-  const [canvasSize, setCanvasSize] = useState<number>(800);
-  const [currentShape, setCurrentShape] = useState<string | null>(null);
-  const [layers, setLayers] = useState<Layer[]>([]);
-  const [colors, setColors] = useState<string[]>([
-    "#FFD700",
-    "#00FFD9",
-    "#FF6B9D",
-    "#9D4EDD",
-  ]);
-  const [alphas, setAlphas] = useState<number[]>([100, 100, 100, 100]);
-  const [noiseIntensity, setNoiseIntensity] = useState<number>(25);
-  const [noiseScale, setNoiseScale] = useState<number>(80);
-  const [rotation, setRotation] = useState<number>(0);
-  const [blur, setBlur] = useState<number>(40);
+
+  const loadFromStorage = <T,>(key: string, defaultValue: T): T => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  };
+
+  const [canvasSize, setCanvasSize] = useState<number>(() =>
+    loadFromStorage("gradientStudio.canvasSize", 800),
+  );
+  const [currentShape, setCurrentShape] = useState<string | null>(() =>
+    loadFromStorage("gradientStudio.currentShape", null),
+  );
+  const [layers, setLayers] = useState<Layer[]>(() =>
+    loadFromStorage("gradientStudio.layers", []),
+  );
+  const [colors, setColors] = useState<string[]>(() =>
+    loadFromStorage("gradientStudio.colors", [
+      "#FFD700",
+      "#00FFD9",
+      "#FF6B9D",
+      "#9D4EDD",
+    ]),
+  );
+  const [alphas, setAlphas] = useState<number[]>(() =>
+    loadFromStorage("gradientStudio.alphas", [100, 100, 100, 100]),
+  );
+  const [noiseIntensity, setNoiseIntensity] = useState<number>(() =>
+    loadFromStorage("gradientStudio.noiseIntensity", 25),
+  );
+  const [noiseScale, setNoiseScale] = useState<number>(() =>
+    loadFromStorage("gradientStudio.noiseScale", 80),
+  );
+  const [rotation, setRotation] = useState<number>(() =>
+    loadFromStorage("gradientStudio.rotation", 0),
+  );
+  const [blur, setBlur] = useState<number>(() =>
+    loadFromStorage("gradientStudio.blur", 40),
+  );
   const [editingLayer, setEditingLayer] = useState<number | null>(null);
   const [draggedLayer, setDraggedLayer] = useState<number | null>(null);
 
@@ -117,6 +145,54 @@ export function GradientStudioProvider({
   useEffect(() => {
     updateCanvas();
   }, [layers, canvasSize]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gradientStudio.canvasSize",
+      JSON.stringify(canvasSize),
+    );
+  }, [canvasSize]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gradientStudio.currentShape",
+      JSON.stringify(currentShape),
+    );
+  }, [currentShape]);
+
+  useEffect(() => {
+    localStorage.setItem("gradientStudio.layers", JSON.stringify(layers));
+  }, [layers]);
+
+  useEffect(() => {
+    localStorage.setItem("gradientStudio.colors", JSON.stringify(colors));
+  }, [colors]);
+
+  useEffect(() => {
+    localStorage.setItem("gradientStudio.alphas", JSON.stringify(alphas));
+  }, [alphas]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gradientStudio.noiseIntensity",
+      JSON.stringify(noiseIntensity),
+    );
+  }, [noiseIntensity]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gradientStudio.noiseScale",
+      JSON.stringify(noiseScale),
+    );
+  }, [noiseScale]);
+
+  useEffect(() => {
+    localStorage.setItem("gradientStudio.rotation", JSON.stringify(rotation));
+  }, [rotation]);
+
+  useEffect(() => {
+    localStorage.setItem("gradientStudio.blur", JSON.stringify(blur));
+  }, [blur]);
 
   const updateCanvas = (): void => {
     const canvas = canvasRef.current;
@@ -144,55 +220,6 @@ export function GradientStudioProvider({
           b: parseInt(result[3], 16),
         }
       : null;
-  };
-
-  const createNoisyGradient = (
-    ctx: CanvasRenderingContext2D,
-    layer: Layer,
-  ): CanvasPattern | null => {
-    const size = canvasSize;
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = size;
-    tempCanvas.height = size;
-    const tempCtx = tempCanvas.getContext("2d", { alpha: true });
-    if (!tempCtx) return null;
-
-    const gradient = tempCtx.createLinearGradient(0, 0, size, size);
-
-    layer.colors.forEach((color, idx) => {
-      const rgb = hexToRgb(color) || { r: 0, g: 0, b: 0 };
-      const alpha = layer.alphas[idx] / 100;
-      const stop = idx / Math.max(1, layer.colors.length - 1);
-      gradient.addColorStop(
-        stop,
-        `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`,
-      );
-    });
-
-    tempCtx.fillStyle = gradient;
-    tempCtx.fillRect(0, 0, size, size);
-
-    const imageData = tempCtx.getImageData(0, 0, size, size);
-    const data = imageData.data;
-    const intensity = layer.noiseIntensity / 100;
-    const scale = layer.noiseScale;
-
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const i = (y * size + x) * 4;
-
-        const noise = perlinNoise(x / scale, y / scale) * intensity * 255;
-
-        if (data[i + 3] > 0) {
-          data[i] = Math.max(0, Math.min(255, data[i] + noise));
-          data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
-          data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
-        }
-      }
-    }
-
-    tempCtx.putImageData(imageData, 0, 0);
-    return tempCtx.createPattern(tempCanvas, "no-repeat");
   };
 
   const perlinNoise = (x: number, y: number): number => {
