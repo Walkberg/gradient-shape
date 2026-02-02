@@ -412,16 +412,55 @@ export function GradientStudioProvider({
 
     ctx.save();
 
-    ctx.filter = `blur(${layer.blur}px)`;
-
     ctx.translate(centerX, centerY);
     ctx.rotate((layer.rotation * Math.PI) / 180);
     ctx.translate(-centerX, -centerY);
 
-    const gradient = createNoisyGradient(ctx, layer);
-    if (gradient) ctx.fillStyle = gradient;
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = size;
+    tempCanvas.height = size;
+    const tempCtx = tempCanvas.getContext("2d", { alpha: true });
 
-    drawShape(ctx, layer.shape, centerX, centerY, size * 0.35);
+    if (tempCtx) {
+      const gradient = tempCtx.createLinearGradient(0, 0, size, size);
+      layer.colors.forEach((color, idx) => {
+        const rgb = hexToRgb(color) || { r: 0, g: 0, b: 0 };
+        const alpha = layer.alphas[idx] / 100;
+        const stop = idx / Math.max(1, layer.colors.length - 1);
+        gradient.addColorStop(
+          stop,
+          `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`,
+        );
+      });
+
+      tempCtx.fillStyle = gradient;
+      drawShape(tempCtx, layer.shape, centerX, centerY, size * 0.35);
+
+      ctx.filter = `blur(${layer.blur}px)`;
+      ctx.drawImage(tempCanvas, 0, 0);
+      ctx.filter = "none";
+
+      const imageData = ctx.getImageData(0, 0, size, size);
+      const data = imageData.data;
+      const intensity = layer.noiseIntensity / 100;
+      const scale = layer.noiseScale;
+
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const i = (y * size + x) * 4;
+
+          const noise = perlinNoise(x / scale, y / scale) * intensity * 255;
+
+          if (data[i + 3] > 0) {
+            data[i] = Math.max(0, Math.min(255, data[i] + noise));
+            data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+            data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+          }
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
 
     ctx.restore();
   };
