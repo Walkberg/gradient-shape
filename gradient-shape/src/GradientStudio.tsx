@@ -178,6 +178,31 @@ export function GradientShapeStudio(): JSX.Element {
               />
             </div>
           </div>
+          <div className="space-y-2">
+            {editingLayer ? (
+              <>
+                <button
+                  onClick={updateLayer}
+                  className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
+                >
+                  ✓ SAUVEGARDER
+                </button>
+                <button
+                  onClick={cancelEdit}
+                  className="w-full bg-white brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
+                >
+                  ✕ ANNULER
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={addLayer}
+                className="w-full bg-[#FF6B35] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
+              >
+                + AJOUTER FORME
+              </button>
+            )}
+          </div>
           {layers.length > 0 && (
             <div className="bg-white brutal-border brutal-shadow p-3">
               <h2 className="text-lg font-bold mb-2 uppercase text-black">
@@ -224,30 +249,6 @@ export function GradientShapeStudio(): JSX.Element {
         </div>
         <div className="space-y-3 flex flex-col h-full">
           <div className="space-y-2 flex-shrink-0">
-            {editingLayer ? (
-              <>
-                <button
-                  onClick={updateLayer}
-                  className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
-                >
-                  ✓ SAUVEGARDER
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="w-full bg-white brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
-                >
-                  ✕ ANNULER
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={addLayer}
-                className="w-full bg-[#FF6B35] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
-              >
-                + AJOUTER FORME
-              </button>
-            )}
-
             <button
               onClick={randomize}
               className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
