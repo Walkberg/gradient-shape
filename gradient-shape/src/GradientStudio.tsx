@@ -48,7 +48,6 @@ export function GradientShapeStudio(): JSX.Element {
           <header>
             <div className="bg-[#FF6B35] brutal-border brutal-shadow p-3">
               <h1 className="text-2xl font-bold mb-1">GRADIENT STUDIO</h1>
-              <p className="text-sm">Gradients + Noise + Alpha = 🔥</p>
             </div>
           </header>
           <div className="bg-[#00D9FF] brutal-border brutal-shadow p-3">
@@ -81,12 +80,17 @@ export function GradientShapeStudio(): JSX.Element {
                     const hue = Math.floor(Math.random() * 360);
                     const sat = Math.floor(Math.random() * 50) + 50;
                     const light = Math.floor(Math.random() * 30) + 40;
-                    const hslToHex = (h: number, s: number, l: number): string => {
+                    const hslToHex = (
+                      h: number,
+                      s: number,
+                      l: number,
+                    ): string => {
                       l /= 100;
                       const a = (s * Math.min(l, 1 - l)) / 100;
                       const f = (n: number): string => {
                         const k = (n + h / 30) % 12;
-                        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                        const color =
+                          l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
                         return Math.round(255 * color)
                           .toString(16)
                           .padStart(2, "0");
@@ -95,7 +99,12 @@ export function GradientShapeStudio(): JSX.Element {
                     };
                     return hslToHex(hue, sat, light);
                   };
-                  setColors([randomColor(), randomColor(), randomColor(), randomColor()]);
+                  setColors([
+                    randomColor(),
+                    randomColor(),
+                    randomColor(),
+                    randomColor(),
+                  ]);
                   setAlphas([
                     Math.floor(Math.random() * 40) + 60,
                     Math.floor(Math.random() * 40) + 60,
