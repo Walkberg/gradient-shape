@@ -15,11 +15,42 @@ export function SettingsPanel() {
     setCanvasSize,
   } = useGradientStudio();
 
+  const animateValue = (
+    current: number,
+    target: number,
+    setter: (value: number) => void,
+    duration: number = 500,
+  ) => {
+    const startTime = performance.now();
+    const diff = target - current;
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(current + diff * eased);
+
+      setter(value);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  };
+
   const randomizeSettings = () => {
-    setNoiseIntensity(Math.floor(Math.random() * 100));
-    setNoiseScale(Math.floor(Math.random() * 10));
-    setRotation(Math.floor(Math.random() * 360));
-    setBlur(Math.floor(Math.random() * 30) + 30);
+    const targetNoise = Math.floor(Math.random() * 100);
+    const targetScale = Math.floor(Math.random() * 10);
+    const targetRotation = Math.floor(Math.random() * 360);
+    const targetBlur = Math.floor(Math.random() * 30) + 30;
+
+    animateValue(noiseIntensity, targetNoise, setNoiseIntensity);
+    animateValue(noiseScale, targetScale, setNoiseScale);
+    animateValue(rotation, targetRotation, setRotation);
+    animateValue(blur, targetBlur, setBlur);
   };
 
   return (
