@@ -38,6 +38,41 @@ export function GradientShapeStudio(): JSX.Element {
     download,
   } = useGradientStudio();
 
+  const handleRandomizeColors = () => {
+    const randomColor = () => {
+      const hue = Math.floor(Math.random() * 360);
+      const sat = Math.floor(Math.random() * 50) + 50;
+      const light = Math.floor(Math.random() * 30) + 40;
+      const hslToHex = (h: number, s: number, l: number): string => {
+        l /= 100;
+        const a = (s * Math.min(l, 1 - l)) / 100;
+        const f = (n: number): string => {
+          const k = (n + h / 30) % 12;
+          const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+          return Math.round(255 * color)
+            .toString(16)
+            .padStart(2, "0");
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+      };
+      return hslToHex(hue, sat, light);
+    };
+    setColors([randomColor(), randomColor(), randomColor(), randomColor()]);
+    setAlphas([
+      Math.floor(Math.random() * 40) + 60,
+      Math.floor(Math.random() * 40) + 60,
+      Math.floor(Math.random() * 40) + 60,
+      Math.floor(Math.random() * 40) + 60,
+    ]);
+  };
+
+  const handleRandomizeParameters = () => {
+    setNoiseIntensity(Math.floor(Math.random() * 30) + 15);
+    setNoiseScale(Math.floor(Math.random() * 60) + 60);
+    setRotation(Math.floor(Math.random() * 360));
+    setBlur(Math.floor(Math.random() * 30) + 30);
+  };
+
   return (
     <div
       className="h-screen bg-[#FFFDE7] p-3 overflow-hidden"
@@ -75,43 +110,7 @@ export function GradientShapeStudio(): JSX.Element {
                 Couleurs + Alpha
               </h2>
               <button
-                onClick={() => {
-                  const randomColor = () => {
-                    const hue = Math.floor(Math.random() * 360);
-                    const sat = Math.floor(Math.random() * 50) + 50;
-                    const light = Math.floor(Math.random() * 30) + 40;
-                    const hslToHex = (
-                      h: number,
-                      s: number,
-                      l: number,
-                    ): string => {
-                      l /= 100;
-                      const a = (s * Math.min(l, 1 - l)) / 100;
-                      const f = (n: number): string => {
-                        const k = (n + h / 30) % 12;
-                        const color =
-                          l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-                        return Math.round(255 * color)
-                          .toString(16)
-                          .padStart(2, "0");
-                      };
-                      return `#${f(0)}${f(8)}${f(4)}`;
-                    };
-                    return hslToHex(hue, sat, light);
-                  };
-                  setColors([
-                    randomColor(),
-                    randomColor(),
-                    randomColor(),
-                    randomColor(),
-                  ]);
-                  setAlphas([
-                    Math.floor(Math.random() * 40) + 60,
-                    Math.floor(Math.random() * 40) + 60,
-                    Math.floor(Math.random() * 40) + 60,
-                    Math.floor(Math.random() * 40) + 60,
-                  ]);
-                }}
+                onClick={handleRandomizeColors}
                 className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
                 title="Randomiser couleurs"
               >
@@ -155,12 +154,7 @@ export function GradientShapeStudio(): JSX.Element {
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-bold uppercase">Réglages</h2>
               <button
-                onClick={() => {
-                  setNoiseIntensity(Math.floor(Math.random() * 30) + 15);
-                  setNoiseScale(Math.floor(Math.random() * 60) + 60);
-                  setRotation(Math.floor(Math.random() * 360));
-                  setBlur(Math.floor(Math.random() * 30) + 30);
-                }}
+                onClick={handleRandomizeParameters}
                 className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
                 title="Randomiser réglages"
               >
