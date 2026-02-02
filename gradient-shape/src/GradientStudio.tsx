@@ -1,0 +1,287 @@
+import type { JSX } from "react";
+import { useGradientStudio } from "./providers/GradientStudioProvider";
+import "./GradientStudio.css";
+
+export function GradientShapeStudio(): JSX.Element {
+  const {
+    canvasRef,
+    canvasSize,
+    setCanvasSize,
+    currentShape,
+    setCurrentShape,
+    layers,
+    colors,
+    setColors,
+    alphas,
+    setAlphas,
+    noiseIntensity,
+    setNoiseIntensity,
+    noiseScale,
+    setNoiseScale,
+    rotation,
+    setRotation,
+    blur,
+    setBlur,
+    editingLayer,
+    draggedLayer,
+    shapes,
+    addLayer,
+    editLayer,
+    updateLayer,
+    cancelEdit,
+    removeLayer,
+    clearAll,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+    randomize,
+    download,
+  } = useGradientStudio();
+
+  return (
+    <div
+      className="min-h-screen bg-[#FFFDE7] p-4 sm:p-8"
+      style={{ fontFamily: "monospace" }}
+    >
+      <div className="grid lg:grid-cols-[420px,1fr] gap-6">
+        <div className="space-y-4">
+          <header>
+            <div className="bg-[#FF6B35] brutal-border brutal-shadow p-6">
+              <h1 className="text-4xl sm:text-5xl font-bold mb-2">
+                GRADIENT STUDIO
+              </h1>
+              <p className="text-lg sm:text-xl">
+                Gradients + Noise + Alpha = 🔥
+              </p>
+            </div>
+          </header>
+          <div className="bg-[#00D9FF] brutal-border brutal-shadow p-6">
+            <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+              Formes{" "}
+              {editingLayer && <span className="text-sm">(Édition)</span>}
+            </h2>
+            <div className="grid grid-cols-3 gap-3">
+              {shapes.map((shape) => (
+                <button
+                  key={shape.id}
+                  onClick={() => setCurrentShape(shape.id)}
+                  className={`shape-btn brutal-border-thin brutal-shadow-xs p-4 bg-white font-bold text-3xl ${
+                    currentShape === shape.id ? "active" : ""
+                  }`}
+                >
+                  {shape.icon}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="bg-[#F7931E] brutal-border brutal-shadow p-6">
+            <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+              Couleurs + Alpha
+            </h2>
+            <div className="space-y-3">
+              {colors.map((color, index) => (
+                <div key={index} className="grid grid-cols-[1fr,100px] gap-2">
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) => {
+                      const newColors = [...colors];
+                      newColors[index] = e.target.value;
+                      setColors(newColors);
+                    }}
+                  />
+                  <div className="bg-white brutal-border-thin px-3 flex items-center justify-center font-bold">
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={alphas[index]}
+                      onChange={(e) => {
+                        const newAlphas = [...alphas];
+                        newAlphas[index] = parseInt(e.target.value) || 0;
+                        setAlphas(newAlphas);
+                      }}
+                      className="w-full text-center border-0 bg-transparent"
+                      style={{ outline: "none" }}
+                    />
+                    <span className="ml-1">%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="bg-[#7B2FBE] text-white brutal-border brutal-shadow p-6">
+            <h2 className="text-2xl font-bold mb-4 uppercase">Réglages</h2>
+
+            <div className="mb-4">
+              <label className="block mb-2 font-bold text-lg flex justify-between">
+                <span>NOISE</span>
+                <span>{noiseIntensity}</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="60"
+                value={noiseIntensity}
+                onChange={(e) => setNoiseIntensity(parseInt(e.target.value))}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-2 font-bold text-lg flex justify-between">
+                <span>ÉCHELLE NOISE</span>
+                <span>{noiseScale}</span>
+              </label>
+              <input
+                type="range"
+                min="30"
+                max="150"
+                value={noiseScale}
+                onChange={(e) => setNoiseScale(parseInt(e.target.value))}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-2 font-bold text-lg flex justify-between">
+                <span>FLOU</span>
+                <span>{blur}px</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="80"
+                value={blur}
+                onChange={(e) => setBlur(parseInt(e.target.value))}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-2 font-bold text-lg flex justify-between">
+                <span>ROTATION</span>
+                <span>{rotation}°</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={rotation}
+                onChange={(e) => setRotation(parseInt(e.target.value))}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-bold text-lg">TAILLE</label>
+              <input
+                type="number"
+                min="400"
+                max="2048"
+                step="100"
+                value={canvasSize}
+                onChange={(e) => setCanvasSize(parseInt(e.target.value))}
+              />
+            </div>
+          </div>
+          {layers.length > 0 && (
+            <div className="bg-white brutal-border brutal-shadow p-6">
+              <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+                Calques ({layers.length})
+                <span className="text-sm block mt-1">
+                  Glisse pour réordonner
+                </span>
+              </h2>
+              <div className="space-y-2">
+                {layers.map((layer, index) => (
+                  <div
+                    key={layer.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className={`layer-item flex justify-between items-center bg-[#FFFDE7] brutal-border-thin p-3 ${
+                      draggedLayer === index ? "layer-dragging" : ""
+                    } ${editingLayer === layer.id ? "bg-[#FFF9C4]" : ""}`}
+                  >
+                    <span className="font-bold text-black">
+                      #{index + 1} -{" "}
+                      {shapes.find((s) => s.id === layer.shape)?.name}
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => editLayer(layer)}
+                        className="bg-[#00D9FF] brutal-border-thin px-3 py-1 font-bold hover:bg-[#00B8D9] text-black"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        onClick={() => removeLayer(layer.id)}
+                        className="bg-[#FF6B35] brutal-border-thin px-3 py-1 font-bold hover:bg-red-600 hover:text-white"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="space-y-4">
+          <div className="space-y-3">
+            {editingLayer ? (
+              <>
+                <button
+                  onClick={updateLayer}
+                  className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+                >
+                  ✓ SAUVEGARDER
+                </button>
+                <button
+                  onClick={cancelEdit}
+                  className="w-full bg-white brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+                >
+                  ✕ ANNULER
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={addLayer}
+                className="w-full bg-[#FF6B35] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+              >
+                + AJOUTER FORME
+              </button>
+            )}
+
+            <button
+              onClick={randomize}
+              className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+            >
+              🎲 ALÉATOIRE
+            </button>
+
+            <button
+              onClick={clearAll}
+              className="w-full bg-white brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+            >
+              🗑️ EFFACER TOUT
+            </button>
+
+            <button
+              onClick={download}
+              className="w-full bg-[#F7931E] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+            >
+              ⬇️ TÉLÉCHARGER PNG
+            </button>
+          </div>
+          <div className="bg-white brutal-border brutal-shadow p-8 canvas-checker flex items-center justify-center">
+            <canvas
+              ref={canvasRef}
+              width={canvasSize}
+              height={canvasSize}
+              className="brutal-border brutal-shadow-sm max-w-full h-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
