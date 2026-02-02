@@ -71,9 +71,44 @@ export function GradientShapeStudio(): JSX.Element {
             </div>
           </div>
           <div className="bg-[#F7931E] brutal-border brutal-shadow p-3">
-            <h2 className="text-lg font-bold mb-2 uppercase text-black">
-              Couleurs + Alpha
-            </h2>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-bold uppercase text-black">
+                Couleurs + Alpha
+              </h2>
+              <button
+                onClick={() => {
+                  const randomColor = () => {
+                    const hue = Math.floor(Math.random() * 360);
+                    const sat = Math.floor(Math.random() * 50) + 50;
+                    const light = Math.floor(Math.random() * 30) + 40;
+                    const hslToHex = (h: number, s: number, l: number): string => {
+                      l /= 100;
+                      const a = (s * Math.min(l, 1 - l)) / 100;
+                      const f = (n: number): string => {
+                        const k = (n + h / 30) % 12;
+                        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                        return Math.round(255 * color)
+                          .toString(16)
+                          .padStart(2, "0");
+                      };
+                      return `#${f(0)}${f(8)}${f(4)}`;
+                    };
+                    return hslToHex(hue, sat, light);
+                  };
+                  setColors([randomColor(), randomColor(), randomColor(), randomColor()]);
+                  setAlphas([
+                    Math.floor(Math.random() * 40) + 60,
+                    Math.floor(Math.random() * 40) + 60,
+                    Math.floor(Math.random() * 40) + 60,
+                    Math.floor(Math.random() * 40) + 60,
+                  ]);
+                }}
+                className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
+                title="Randomiser couleurs"
+              >
+                🎲
+              </button>
+            </div>
             <div className="grid grid-cols-2 gap-2">
               {colors.map((color, index) => (
                 <div key={index} className="flex items-center gap-1">
@@ -108,7 +143,21 @@ export function GradientShapeStudio(): JSX.Element {
             </div>
           </div>
           <div className="bg-[#7B2FBE] text-white brutal-border brutal-shadow p-3">
-            <h2 className="text-lg font-bold mb-2 uppercase">Réglages</h2>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-bold uppercase">Réglages</h2>
+              <button
+                onClick={() => {
+                  setNoiseIntensity(Math.floor(Math.random() * 30) + 15);
+                  setNoiseScale(Math.floor(Math.random() * 60) + 60);
+                  setRotation(Math.floor(Math.random() * 360));
+                  setBlur(Math.floor(Math.random() * 30) + 30);
+                }}
+                className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
+                title="Randomiser réglages"
+              >
+                🎲
+              </button>
+            </div>
 
             <div className="mb-2">
               <label className="block mb-1 font-bold text-sm flex justify-between">
