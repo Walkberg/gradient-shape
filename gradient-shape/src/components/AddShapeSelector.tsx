@@ -1,7 +1,7 @@
-import { useGradientStudio, type Shape } from "../providers";
+import { useGradientStudio } from "../providers";
 import { ShapePicker } from "./ShapePicker";
 
-export function ShapesSelector() {
+export function AddShapeSelector() {
   const { shapes, addLayerWithShape } = useGradientStudio();
 
   return (

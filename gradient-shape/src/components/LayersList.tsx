@@ -13,8 +13,6 @@ export function LayersList() {
     handleDragEnd,
   } = useGradientStudio();
 
-  if (layers.length === 0) return null;
-
   return (
     <div className="bg-white brutal-border brutal-shadow p-3">
       <h2 className="text-lg font-bold mb-2 uppercase text-black">
@@ -29,27 +27,23 @@ export function LayersList() {
             onDragStart={(e) => handleDragStart(e, index)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
-            className={`layer-item flex justify-between items-center bg-[#FFFDE7] brutal-border-thin p-3 ${
+            onClick={() => editLayer(layer)}
+            className={`layer-item flex justify-between items-center bg-[#FFFDE7] brutal-border-thin p-3 cursor-pointer hover:bg-[#FFF9C4] ${
               draggedLayer === index ? "layer-dragging" : ""
-            } ${editingLayer === layer.id ? "bg-[#FFF9C4]" : ""}`}
+            } ${editingLayer === layer.id ? "bg-[#FFF9C4] ring-4 ring-[#FF6B35]" : ""}`}
           >
             <span className="font-bold text-black">
               #{index + 1} - {shapes.find((s) => s.id === layer.shape)?.name}
             </span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => editLayer(layer)}
-                className="bg-[#00D9FF] brutal-border-thin px-3 py-1 font-bold hover:bg-[#00B8D9] text-black"
-              >
-                ✎
-              </button>
-              <button
-                onClick={() => removeLayer(layer.id)}
-                className="bg-[#FF6B35] brutal-border-thin px-3 py-1 font-bold hover:bg-red-600 hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                removeLayer(layer.id);
+              }}
+              className="brutal-border-thin brutal-shadow-xs px-3 py-1 font-bold hover:bg-red-600 hover:text-white bg-[#FF6B35] text-black"
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>

@@ -41,7 +41,7 @@ export interface Shape {
 }
 
 interface GradientStudioContextType {
-  canvasRef: RefObject<HTMLCanvasElement>;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
   canvasSize: number;
   setCanvasSize: (size: number) => void;
   currentShape: string | null;
@@ -65,8 +65,13 @@ interface GradientStudioContextType {
   draggedLayer: number | null;
   shapes: Shape[];
   addLayer: () => void;
+  addLayerWithShape: (shapeId: string) => void;
   editLayer: (layer: Layer) => void;
   updateLayer: () => void;
+  updateEditingLayerProperty: <K extends keyof Layer>(
+    property: K,
+    value: Layer[K],
+  ) => void;
   cancelEdit: () => void;
   removeLayer: (id: number) => void;
   clearAll: () => void;
@@ -98,8 +103,7 @@ interface GradientStudioProviderProps {
 export function GradientStudioProvider({
   children,
 }: GradientStudioProviderProps): JSX.Element {
-  const canvasRef: RefObject<HTMLCanvasElement> =
-    useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const loadFromStorage = <T,>(key: string, defaultValue: T): T => {
     try {
@@ -218,6 +222,39 @@ export function GradientStudioProvider({
       JSON.stringify(shapeParams),
     );
   }, [shapeParams]);
+
+  useEffect(() => {
+    if (editingLayer !== null) {
+      setLayers((prevLayers) =>
+        prevLayers.map((layer) => {
+          if (layer.id === editingLayer) {
+            return {
+              ...layer,
+              shape: currentShape || layer.shape,
+              colors: [...colors],
+              alphas: [...alphas],
+              noiseIntensity,
+              noiseScale,
+              rotation,
+              blur,
+              shapeParams: { ...shapeParams },
+            };
+          }
+          return layer;
+        }),
+      );
+    }
+  }, [
+    colors,
+    alphas,
+    noiseIntensity,
+    noiseScale,
+    rotation,
+    blur,
+    shapeParams,
+    currentShape,
+    editingLayer,
+  ]);
 
   const updateCanvas = (): void => {
     const canvas = canvasRef.current;
@@ -594,6 +631,43 @@ export function GradientStudioProvider({
     setEditingLayer(null);
   };
 
+  const addLayerWithShape = (shapeId: string): void => {
+    const newColors = [randomColor(), randomColor()];
+    const newAlphas = [
+      Math.floor(Math.random() * 40) + 60,
+      Math.floor(Math.random() * 40) + 60,
+    ];
+    const newNoiseIntensity = Math.floor(Math.random() * 100);
+    const newNoiseScale = Math.floor(Math.random() * 10);
+    const newBlur = Math.floor(Math.random() * 30) + 30;
+    const newRotation = Math.floor(Math.random() * 360);
+    const newShapeParams = ShapeParamsFactory.getRandomParams(shapeId);
+
+    const layer: Layer = {
+      shape: shapeId,
+      colors: newColors,
+      alphas: newAlphas,
+      noiseIntensity: newNoiseIntensity,
+      noiseScale: newNoiseScale,
+      rotation: newRotation,
+      blur: newBlur,
+      id: Date.now(),
+      shapeParams: newShapeParams,
+    };
+
+    const newLayers = [...layers, layer];
+    setLayers(newLayers);
+    setEditingLayer(layer.id);
+    setCurrentShape(shapeId);
+    setColors(newColors);
+    setAlphas(newAlphas);
+    setNoiseIntensity(newNoiseIntensity);
+    setNoiseScale(newNoiseScale);
+    setRotation(newRotation);
+    setBlur(newBlur);
+    setShapeParams(newShapeParams);
+  };
+
   const editLayer = (layer: Layer): void => {
     setEditingLayer(layer.id);
     setCurrentShape(layer.shape);
@@ -604,6 +678,22 @@ export function GradientStudioProvider({
     setRotation(layer.rotation);
     setBlur(layer.blur);
     setShapeParams(layer.shapeParams || {});
+  };
+
+  const updateEditingLayerProperty = <K extends keyof Layer>(
+    property: K,
+    value: Layer[K],
+  ): void => {
+    if (editingLayer === null) return;
+
+    const updatedLayers = layers.map((layer) => {
+      if (layer.id === editingLayer) {
+        return { ...layer, [property]: value };
+      }
+      return layer;
+    });
+
+    setLayers(updatedLayers);
   };
 
   const updateLayer = (): void => {
@@ -767,8 +857,10 @@ export function GradientStudioProvider({
     draggedLayer,
     shapes,
     addLayer,
+    addLayerWithShape,
     editLayer,
     updateLayer,
+    updateEditingLayerProperty,
     cancelEdit,
     removeLayer,
     clearAll,
