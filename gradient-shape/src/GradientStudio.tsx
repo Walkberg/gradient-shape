@@ -40,32 +40,28 @@ export function GradientShapeStudio(): JSX.Element {
 
   return (
     <div
-      className="min-h-screen bg-[#FFFDE7] p-4 sm:p-8"
+      className="h-screen bg-[#FFFDE7] p-3 overflow-hidden"
       style={{ fontFamily: "monospace" }}
     >
-      <div className="grid lg:grid-cols-[420px,1fr] gap-6">
-        <div className="space-y-4">
+      <div className="grid grid-cols-[380px_1fr] gap-4 h-full">
+        <div className="space-y-3 overflow-y-auto">
           <header>
-            <div className="bg-[#FF6B35] brutal-border brutal-shadow p-6">
-              <h1 className="text-4xl sm:text-5xl font-bold mb-2">
-                GRADIENT STUDIO
-              </h1>
-              <p className="text-lg sm:text-xl">
-                Gradients + Noise + Alpha = 🔥
-              </p>
+            <div className="bg-[#FF6B35] brutal-border brutal-shadow p-3">
+              <h1 className="text-2xl font-bold mb-1">GRADIENT STUDIO</h1>
+              <p className="text-sm">Gradients + Noise + Alpha = 🔥</p>
             </div>
           </header>
-          <div className="bg-[#00D9FF] brutal-border brutal-shadow p-6">
-            <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+          <div className="bg-[#00D9FF] brutal-border brutal-shadow p-3">
+            <h2 className="text-lg font-bold mb-2 uppercase text-black">
               Formes{" "}
-              {editingLayer && <span className="text-sm">(Édition)</span>}
+              {editingLayer && <span className="text-xs">(Édition)</span>}
             </h2>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               {shapes.map((shape) => (
                 <button
                   key={shape.id}
                   onClick={() => setCurrentShape(shape.id)}
-                  className={`shape-btn brutal-border-thin brutal-shadow-xs p-4 bg-white font-bold text-3xl ${
+                  className={`shape-btn brutal-border-thin brutal-shadow-xs p-2 bg-white font-bold text-2xl ${
                     currentShape === shape.id ? "active" : ""
                   }`}
                 >
@@ -74,11 +70,11 @@ export function GradientShapeStudio(): JSX.Element {
               ))}
             </div>
           </div>
-          <div className="bg-[#F7931E] brutal-border brutal-shadow p-6">
-            <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+          <div className="bg-[#F7931E] brutal-border brutal-shadow p-3">
+            <h2 className="text-lg font-bold mb-2 uppercase text-black">
               Couleurs + Alpha
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {colors.map((color, index) => (
                 <div key={index} className="grid grid-cols-[1fr,100px] gap-2">
                   <input
@@ -110,11 +106,11 @@ export function GradientShapeStudio(): JSX.Element {
               ))}
             </div>
           </div>
-          <div className="bg-[#7B2FBE] text-white brutal-border brutal-shadow p-6">
-            <h2 className="text-2xl font-bold mb-4 uppercase">Réglages</h2>
+          <div className="bg-[#7B2FBE] text-white brutal-border brutal-shadow p-3">
+            <h2 className="text-lg font-bold mb-2 uppercase">Réglages</h2>
 
-            <div className="mb-4">
-              <label className="block mb-2 font-bold text-lg flex justify-between">
+            <div className="mb-2">
+              <label className="block mb-1 font-bold text-sm flex justify-between">
                 <span>NOISE</span>
                 <span>{noiseIntensity}</span>
               </label>
@@ -127,8 +123,8 @@ export function GradientShapeStudio(): JSX.Element {
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block mb-2 font-bold text-lg flex justify-between">
+            <div className="mb-2">
+              <label className="block mb-1 font-bold text-sm flex justify-between">
                 <span>ÉCHELLE NOISE</span>
                 <span>{noiseScale}</span>
               </label>
@@ -141,8 +137,8 @@ export function GradientShapeStudio(): JSX.Element {
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block mb-2 font-bold text-lg flex justify-between">
+            <div className="mb-2">
+              <label className="block mb-1 font-bold text-sm flex justify-between">
                 <span>FLOU</span>
                 <span>{blur}px</span>
               </label>
@@ -155,8 +151,8 @@ export function GradientShapeStudio(): JSX.Element {
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block mb-2 font-bold text-lg flex justify-between">
+            <div className="mb-2">
+              <label className="block mb-1 font-bold text-sm flex justify-between">
                 <span>ROTATION</span>
                 <span>{rotation}°</span>
               </label>
@@ -170,7 +166,7 @@ export function GradientShapeStudio(): JSX.Element {
             </div>
 
             <div>
-              <label className="block mb-2 font-bold text-lg">TAILLE</label>
+              <label className="block mb-1 font-bold text-sm">TAILLE</label>
               <input
                 type="number"
                 min="400"
@@ -182,8 +178,8 @@ export function GradientShapeStudio(): JSX.Element {
             </div>
           </div>
           {layers.length > 0 && (
-            <div className="bg-white brutal-border brutal-shadow p-6">
-              <h2 className="text-2xl font-bold mb-4 uppercase text-black">
+            <div className="bg-white brutal-border brutal-shadow p-3">
+              <h2 className="text-lg font-bold mb-2 uppercase text-black">
                 Calques ({layers.length})
                 <span className="text-sm block mt-1">
                   Glisse pour réordonner
@@ -225,19 +221,19 @@ export function GradientShapeStudio(): JSX.Element {
             </div>
           )}
         </div>
-        <div className="space-y-4">
-          <div className="space-y-3">
+        <div className="space-y-3 flex flex-col h-full">
+          <div className="space-y-2 flex-shrink-0">
             {editingLayer ? (
               <>
                 <button
                   onClick={updateLayer}
-                  className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+                  className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
                 >
                   ✓ SAUVEGARDER
                 </button>
                 <button
                   onClick={cancelEdit}
-                  className="w-full bg-white brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+                  className="w-full bg-white brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
                 >
                   ✕ ANNULER
                 </button>
@@ -245,7 +241,7 @@ export function GradientShapeStudio(): JSX.Element {
             ) : (
               <button
                 onClick={addLayer}
-                className="w-full bg-[#FF6B35] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+                className="w-full bg-[#FF6B35] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
               >
                 + AJOUTER FORME
               </button>
@@ -253,26 +249,26 @@ export function GradientShapeStudio(): JSX.Element {
 
             <button
               onClick={randomize}
-              className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+              className="w-full bg-[#00D9FF] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
             >
               🎲 ALÉATOIRE
             </button>
 
             <button
               onClick={clearAll}
-              className="w-full bg-white brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+              className="w-full bg-white brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
             >
               🗑️ EFFACER TOUT
             </button>
 
             <button
               onClick={download}
-              className="w-full bg-[#F7931E] brutal-border brutal-shadow hover-lift p-4 font-bold text-xl uppercase text-black"
+              className="w-full bg-[#F7931E] brutal-border brutal-shadow hover-lift p-2 font-bold text-lg uppercase text-black"
             >
               ⬇️ TÉLÉCHARGER PNG
             </button>
           </div>
-          <div className="bg-white brutal-border brutal-shadow p-8 canvas-checker flex items-center justify-center">
+          <div className="bg-white brutal-border brutal-shadow p-4 canvas-checker flex items-center justify-center flex-1 overflow-hidden">
             <canvas
               ref={canvasRef}
               width={canvasSize}
