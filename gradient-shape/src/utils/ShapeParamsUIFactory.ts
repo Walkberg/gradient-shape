@@ -28,32 +28,6 @@ export class ShapeParamsUIFactory {
         },
       ],
     },
-    star6: {
-      title: "Paramètres Étoile",
-      params: [
-        { key: "starSpikes", label: "BRANCHES", min: 3, max: 12 },
-        {
-          key: "starInnerRadius",
-          label: "PROFONDEUR",
-          min: 20,
-          max: 80,
-          unit: "%",
-        },
-      ],
-    },
-    star8: {
-      title: "Paramètres Étoile",
-      params: [
-        { key: "starSpikes", label: "BRANCHES", min: 3, max: 12 },
-        {
-          key: "starInnerRadius",
-          label: "PROFONDEUR",
-          min: 20,
-          max: 80,
-          unit: "%",
-        },
-      ],
-    },
     blob: {
       title: "Paramètres Blob",
       params: [
@@ -68,25 +42,6 @@ export class ShapeParamsUIFactory {
       ],
     },
     "arrow-up": {
-      title: "Paramètres Flèche",
-      params: [
-        {
-          key: "arrowBodyWidth",
-          label: "LARGEUR CORPS",
-          min: 10,
-          max: 60,
-          unit: "%",
-        },
-        {
-          key: "arrowHeadWidth",
-          label: "LARGEUR TÊTE",
-          min: 40,
-          max: 100,
-          unit: "%",
-        },
-      ],
-    },
-    "arrow-right": {
       title: "Paramètres Flèche",
       params: [
         {
