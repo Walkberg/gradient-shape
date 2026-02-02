@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { useEffect } from "react";
 import {
   Header,
   ShapesSelector,
@@ -11,8 +12,23 @@ import {
 } from "./components";
 import "./GradientStudio.css";
 import { ActionHeader } from "./components/ActionHeader";
+import { useGradientStudio } from "./providers";
 
 export function GradientShapeStudio(): JSX.Element {
+  const { randomize } = useGradientStudio();
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.code === "Space" && e.target === document.body) {
+        e.preventDefault();
+        randomize();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [randomize]);
+
   return (
     <div
       className="h-screen bg-[#FFFDE7] p-3 overflow-hidden"

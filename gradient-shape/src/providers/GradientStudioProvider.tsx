@@ -9,6 +9,7 @@ import {
   type DragEvent,
   type JSX,
 } from "react";
+import { ShapeParamsFactory } from "../utils/ShapeParamsFactory";
 
 export type RGB = { r: number; g: number; b: number };
 
@@ -680,8 +681,9 @@ export function GradientStudioProvider({
 
     const newLayers: Layer[] = [];
     for (let i = 0; i < numLayers; i++) {
+      const randomShape = shapeIds[Math.floor(Math.random() * shapeIds.length)];
       newLayers.push({
-        shape: shapeIds[Math.floor(Math.random() * shapeIds.length)],
+        shape: randomShape,
         colors: [randomColor(), randomColor(), randomColor(), randomColor()],
         alphas: [
           Math.floor(Math.random() * 40) + 60,
@@ -694,6 +696,7 @@ export function GradientStudioProvider({
         rotation: Math.floor(Math.random() * 360),
         blur: Math.floor(Math.random() * 30) + 30,
         id: Date.now() + i,
+        shapeParams: ShapeParamsFactory.getRandomParams(randomShape),
       });
     }
 

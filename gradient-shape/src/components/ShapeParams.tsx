@@ -1,9 +1,12 @@
 import { useGradientStudio } from "../providers";
+import { ShapeParamsFactory } from "../utils/ShapeParamsFactory";
 
 export function ShapeParams() {
   const { currentShape, shapeParams, setShapeParams } = useGradientStudio();
 
   if (!currentShape) return null;
+
+  const defaultParams = ShapeParamsFactory.getDefaultParams(currentShape);
 
   if (
     currentShape === "star" ||
@@ -18,13 +21,13 @@ export function ShapeParams() {
         <div className="mb-2">
           <label className="block mb-1 font-bold text-sm flex justify-between text-black">
             <span>BRANCHES</span>
-            <span>{shapeParams.starSpikes || 5}</span>
+            <span>{shapeParams.starSpikes ?? defaultParams.starSpikes}</span>
           </label>
           <input
             type="range"
             min="3"
             max="12"
-            value={shapeParams.starSpikes || 5}
+            value={shapeParams.starSpikes ?? defaultParams.starSpikes}
             onChange={(e) =>
               setShapeParams({
                 ...shapeParams,
@@ -37,13 +40,15 @@ export function ShapeParams() {
         <div className="mb-2">
           <label className="block mb-1 font-bold text-sm flex justify-between text-black">
             <span>PROFONDEUR</span>
-            <span>{shapeParams.starInnerRadius || 50}%</span>
+            <span>
+              {shapeParams.starInnerRadius ?? defaultParams.starInnerRadius}%
+            </span>
           </label>
           <input
             type="range"
             min="20"
             max="80"
-            value={shapeParams.starInnerRadius || 50}
+            value={shapeParams.starInnerRadius ?? defaultParams.starInnerRadius}
             onChange={(e) =>
               setShapeParams({
                 ...shapeParams,
