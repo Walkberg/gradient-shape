@@ -5,6 +5,10 @@ Générateur interactif de formes dégradées bruitées et floues (noisy, blurry
 
 Cette application permet de créer des calques composés de formes  stylisées, d'appliquer des dégradés, du flou et du "noise" pour obtenir des rendus visuels texturés et organiques.
 
+Capture
+
+![alt text](image.png)
+
 Principales fonctionnalités
 - Ajouter rapidement des formes (cercles, étoiles, flèches, blobs, trèfles, etc.) en cliquant sur une forme.
 - Chaque forme est ajoutée comme un calque avec couleurs, opacités et paramètres générés aléatoirement.
@@ -66,6 +70,3 @@ Ajoutez ici la licence souhaitée (MIT, Apache, ...)
 
 ---
 
-Capture
-
-![alt text](image.png)
