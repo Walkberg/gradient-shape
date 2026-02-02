@@ -4,6 +4,7 @@ import {
   ShapesSelector,
   ColorsAlphaEditor,
   SettingsPanel,
+  ShapeParams,
   ActionButtons,
   LayersList,
   CanvasDisplay,
@@ -21,6 +22,7 @@ export function GradientShapeStudio(): JSX.Element {
         <div className="space-y-3 overflow-y-auto">
           <Header />
           <ShapesSelector />
+          <ShapeParams />
           <ColorsAlphaEditor />
           <SettingsPanel />
           <ActionButtons />

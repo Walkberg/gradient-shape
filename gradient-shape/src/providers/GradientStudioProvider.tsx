@@ -12,6 +12,15 @@ import {
 
 export type RGB = { r: number; g: number; b: number };
 
+export interface ShapeParams {
+  starSpikes?: number;
+  starInnerRadius?: number;
+  blobPoints?: number;
+  blobVariation?: number;
+  arrowBodyWidth?: number;
+  arrowHeadWidth?: number;
+}
+
 export interface Layer {
   id: number;
   shape: string;
@@ -21,6 +30,7 @@ export interface Layer {
   noiseScale: number;
   rotation: number;
   blur: number;
+  shapeParams?: ShapeParams;
 }
 
 export interface Shape {
@@ -48,6 +58,8 @@ interface GradientStudioContextType {
   setRotation: (rotation: number) => void;
   blur: number;
   setBlur: (blur: number) => void;
+  shapeParams: ShapeParams;
+  setShapeParams: (params: ShapeParams) => void;
   editingLayer: number | null;
   draggedLayer: number | null;
   shapes: Shape[];
@@ -129,6 +141,9 @@ export function GradientStudioProvider({
   const [blur, setBlur] = useState<number>(() =>
     loadFromStorage("gradientStudio.blur", 40),
   );
+  const [shapeParams, setShapeParams] = useState<ShapeParams>(() =>
+    loadFromStorage("gradientStudio.shapeParams", {}),
+  );
   const [editingLayer, setEditingLayer] = useState<number | null>(null);
   const [draggedLayer, setDraggedLayer] = useState<number | null>(null);
 
@@ -139,8 +154,6 @@ export function GradientStudioProvider({
     { id: "ellipse", name: "Ellipse", icon: "⬭" },
     { id: "blob", name: "Blob", icon: "◉" },
     { id: "star", name: "Étoile 5", icon: "★" },
-    { id: "star6", name: "Étoile 6", icon: "✶" },
-    { id: "star8", name: "Étoile 8", icon: "✳" },
     { id: "drop", name: "Goutte", icon: "💧" },
     { id: "arrow-up", name: "Flèche Haut", icon: "⬆" },
     { id: "clover", name: "Trèfle", icon: "🍀" },
@@ -197,6 +210,13 @@ export function GradientStudioProvider({
   useEffect(() => {
     localStorage.setItem("gradientStudio.blur", JSON.stringify(blur));
   }, [blur]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gradientStudio.shapeParams",
+      JSON.stringify(shapeParams),
+    );
+  }, [shapeParams]);
 
   const updateCanvas = (): void => {
     const canvas = canvasRef.current;
@@ -287,6 +307,7 @@ export function GradientStudioProvider({
     x: number,
     y: number,
     size: number,
+    params: ShapeParams = {},
   ): void => {
     ctx.beginPath();
 
@@ -378,7 +399,8 @@ export function GradientStudioProvider({
         break;
 
       case "blob":
-        const points = 8;
+        const points = params.blobPoints || 8;
+        const variation = (params.blobVariation || 40) / 100;
         const seed = 12345;
         let random = seed;
         const seededRandom = () => {
@@ -388,7 +410,8 @@ export function GradientStudioProvider({
 
         for (let i = 0; i <= points; i++) {
           const angle = (i / points) * Math.PI * 2;
-          const radius = size * (0.8 + seededRandom() * 0.4);
+          const radius =
+            size * (1 - variation / 2 + seededRandom() * variation);
           const px = x + Math.cos(angle) * radius;
           const py = y + Math.sin(angle) * radius;
 
@@ -413,9 +436,9 @@ export function GradientStudioProvider({
         break;
 
       case "star":
-        const spikes = 5;
+        const spikes = params.starSpikes || 5;
         const outerRadius = size;
-        const innerRadius = size * 0.5;
+        const innerRadius = size * ((params.starInnerRadius || 50) / 100);
 
         for (let i = 0; i < spikes * 2; i++) {
           const angle = (i * Math.PI) / spikes - Math.PI / 2;
@@ -431,34 +454,11 @@ export function GradientStudioProvider({
         }
         ctx.closePath();
         break;
-
-      case "star6":
-        const spikes6 = 6;
-        const outerRadius6 = size;
-        const innerRadius6 = size * 0.5;
-
-        for (let i = 0; i < spikes6 * 2; i++) {
-          const angle = (i * Math.PI) / spikes6 - Math.PI / 2;
-          const radius = i % 2 === 0 ? outerRadius6 : innerRadius6;
-          const px = x + Math.cos(angle) * radius;
-          const py = y + Math.sin(angle) * radius;
-
-          if (i === 0) {
-            ctx.moveTo(px, py);
-          } else {
-            ctx.lineTo(px, py);
-          }
-        }
-        ctx.closePath();
-        break;
-
-      case "star8":
-        const spikes8 = 8;
         const outerRadius8 = size;
         const innerRadius8 = size * 0.5;
 
-        for (let i = 0; i < spikes8 * 2; i++) {
-          const angle = (i * Math.PI) / spikes8 - Math.PI / 2;
+        for (let i = 0; i < spikes * 2; i++) {
+          const angle = (i * Math.PI) / spikes - Math.PI / 2;
           const radius = i % 2 === 0 ? outerRadius8 : innerRadius8;
           const px = x + Math.cos(angle) * radius;
           const py = y + Math.sin(angle) * radius;
@@ -473,14 +473,15 @@ export function GradientStudioProvider({
         break;
 
       case "arrow-up":
-        // Triangle pointe vers le haut + rectangle pour le corps
+        const bodyWidthUp = (params.arrowBodyWidth || 30) / 100;
+        const headWidthUp = (params.arrowHeadWidth || 70) / 100;
         ctx.moveTo(x, y - size);
-        ctx.lineTo(x + size * 0.7, y - size * 0.3);
-        ctx.lineTo(x + size * 0.3, y - size * 0.3);
-        ctx.lineTo(x + size * 0.3, y + size);
-        ctx.lineTo(x - size * 0.3, y + size);
-        ctx.lineTo(x - size * 0.3, y - size * 0.3);
-        ctx.lineTo(x - size * 0.7, y - size * 0.3);
+        ctx.lineTo(x + size * headWidthUp, y - size * 0.3);
+        ctx.lineTo(x + size * bodyWidthUp, y - size * 0.3);
+        ctx.lineTo(x + size * bodyWidthUp, y + size);
+        ctx.lineTo(x - size * bodyWidthUp, y + size);
+        ctx.lineTo(x - size * bodyWidthUp, y - size * 0.3);
+        ctx.lineTo(x - size * headWidthUp, y - size * 0.3);
         ctx.closePath();
         break;
 
@@ -532,7 +533,14 @@ export function GradientStudioProvider({
       });
 
       tempCtx.fillStyle = gradient;
-      drawShape(tempCtx, layer.shape, centerX, centerY, size * 0.35);
+      drawShape(
+        tempCtx,
+        layer.shape,
+        centerX,
+        centerY,
+        size * 0.35,
+        layer.shapeParams,
+      );
 
       ctx.filter = `blur(${layer.blur}px)`;
       ctx.drawImage(tempCanvas, 0, 0);
@@ -578,6 +586,7 @@ export function GradientStudioProvider({
       rotation,
       blur,
       id: Date.now(),
+      shapeParams: { ...shapeParams },
     };
 
     setLayers([...layers, layer]);
@@ -593,6 +602,7 @@ export function GradientStudioProvider({
     setNoiseScale(layer.noiseScale);
     setRotation(layer.rotation);
     setBlur(layer.blur);
+    setShapeParams(layer.shapeParams || {});
   };
 
   const updateLayer = (): void => {
@@ -609,6 +619,7 @@ export function GradientStudioProvider({
           noiseScale,
           rotation,
           blur,
+          shapeParams: { ...shapeParams },
         };
       }
       return layer;
@@ -747,6 +758,8 @@ export function GradientStudioProvider({
     setRotation,
     blur,
     setBlur,
+    shapeParams,
+    setShapeParams,
     editingLayer,
     draggedLayer,
     shapes,
