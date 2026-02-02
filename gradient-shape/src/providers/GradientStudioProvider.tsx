@@ -143,7 +143,6 @@ export function GradientStudioProvider({
     { id: "star8", name: "Étoile 8", icon: "✳" },
     { id: "drop", name: "Goutte", icon: "💧" },
     { id: "arrow-up", name: "Flèche Haut", icon: "⬆" },
-    { id: "arrow-right", name: "Flèche Droite", icon: "➡" },
     { id: "clover", name: "Trèfle", icon: "🍀" },
   ];
 
@@ -485,33 +484,15 @@ export function GradientStudioProvider({
         ctx.closePath();
         break;
 
-      case "arrow-right":
-        // Triangle pointe vers la droite + rectangle pour le corps
-        ctx.moveTo(x + size, y);
-        ctx.lineTo(x + size * 0.3, y + size * 0.7);
-        ctx.lineTo(x + size * 0.3, y + size * 0.3);
-        ctx.lineTo(x - size, y + size * 0.3);
-        ctx.lineTo(x - size, y - size * 0.3);
-        ctx.lineTo(x + size * 0.3, y - size * 0.3);
-        ctx.lineTo(x + size * 0.3, y - size * 0.7);
-        ctx.closePath();
-        break;
-
       case "clover":
-        // Trèfle à 4 feuilles composé de 4 cercles
         const leafRadius = size * 0.5;
-        // Feuille du haut
         ctx.arc(x, y - size * 0.6, leafRadius, 0, Math.PI * 2);
         ctx.moveTo(x + leafRadius * 2 + size * 0.6, y);
-        // Feuille de droite
         ctx.arc(x + size * 0.6, y, leafRadius, 0, Math.PI * 2);
         ctx.moveTo(x + leafRadius * 2, y + size * 0.6);
-        // Feuille du bas
         ctx.arc(x, y + size * 0.6, leafRadius, 0, Math.PI * 2);
         ctx.moveTo(x - leafRadius * 2 - size * 0.6, y);
-        // Feuille de gauche
         ctx.arc(x - size * 0.6, y, leafRadius, 0, Math.PI * 2);
-        // Tige au centre
         ctx.moveTo(x - size * 0.1, y);
         ctx.lineTo(x - size * 0.1, y + size * 1.2);
         ctx.lineTo(x + size * 0.1, y + size * 1.2);
