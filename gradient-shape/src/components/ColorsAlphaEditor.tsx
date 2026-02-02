@@ -1,4 +1,5 @@
 import { useGradientStudio } from "../providers";
+import { RandomButton } from "./RandomButton";
 
 export function ColorsAlphaEditor() {
   const { colors, setColors, alphas, setAlphas } = useGradientStudio();
@@ -37,13 +38,7 @@ export function ColorsAlphaEditor() {
         <h2 className="text-lg font-bold uppercase text-black">
           Couleurs + Alpha
         </h2>
-        <button
-          onClick={randomizeColors}
-          className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
-          title="Randomiser couleurs"
-        >
-          🎲
-        </button>
+        <RandomButton onClick={randomizeColors} />
       </div>
       <div className="grid grid-cols-2 gap-2">
         {colors.map((color, index) => (

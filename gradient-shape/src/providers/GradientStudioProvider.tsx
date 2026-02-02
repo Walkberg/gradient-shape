@@ -138,8 +138,13 @@ export function GradientStudioProvider({
     { id: "halfmoon", name: "Demi-lune", icon: "◐" },
     { id: "ellipse", name: "Ellipse", icon: "⬭" },
     { id: "blob", name: "Blob", icon: "◉" },
-    { id: "star", name: "Étoile", icon: "★" },
+    { id: "star", name: "Étoile 5", icon: "★" },
+    { id: "star6", name: "Étoile 6", icon: "✶" },
+    { id: "star8", name: "Étoile 8", icon: "✳" },
     { id: "drop", name: "Goutte", icon: "💧" },
+    { id: "arrow-up", name: "Flèche Haut", icon: "⬆" },
+    { id: "arrow-right", name: "Flèche Droite", icon: "➡" },
+    { id: "clover", name: "Trèfle", icon: "🍀" },
   ];
 
   useEffect(() => {
@@ -426,6 +431,91 @@ export function GradientStudioProvider({
           }
         }
         ctx.closePath();
+        break;
+
+      case "star6":
+        const spikes6 = 6;
+        const outerRadius6 = size;
+        const innerRadius6 = size * 0.5;
+
+        for (let i = 0; i < spikes6 * 2; i++) {
+          const angle = (i * Math.PI) / spikes6 - Math.PI / 2;
+          const radius = i % 2 === 0 ? outerRadius6 : innerRadius6;
+          const px = x + Math.cos(angle) * radius;
+          const py = y + Math.sin(angle) * radius;
+
+          if (i === 0) {
+            ctx.moveTo(px, py);
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+        ctx.closePath();
+        break;
+
+      case "star8":
+        const spikes8 = 8;
+        const outerRadius8 = size;
+        const innerRadius8 = size * 0.5;
+
+        for (let i = 0; i < spikes8 * 2; i++) {
+          const angle = (i * Math.PI) / spikes8 - Math.PI / 2;
+          const radius = i % 2 === 0 ? outerRadius8 : innerRadius8;
+          const px = x + Math.cos(angle) * radius;
+          const py = y + Math.sin(angle) * radius;
+
+          if (i === 0) {
+            ctx.moveTo(px, py);
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+        ctx.closePath();
+        break;
+
+      case "arrow-up":
+        // Triangle pointe vers le haut + rectangle pour le corps
+        ctx.moveTo(x, y - size);
+        ctx.lineTo(x + size * 0.7, y - size * 0.3);
+        ctx.lineTo(x + size * 0.3, y - size * 0.3);
+        ctx.lineTo(x + size * 0.3, y + size);
+        ctx.lineTo(x - size * 0.3, y + size);
+        ctx.lineTo(x - size * 0.3, y - size * 0.3);
+        ctx.lineTo(x - size * 0.7, y - size * 0.3);
+        ctx.closePath();
+        break;
+
+      case "arrow-right":
+        // Triangle pointe vers la droite + rectangle pour le corps
+        ctx.moveTo(x + size, y);
+        ctx.lineTo(x + size * 0.3, y + size * 0.7);
+        ctx.lineTo(x + size * 0.3, y + size * 0.3);
+        ctx.lineTo(x - size, y + size * 0.3);
+        ctx.lineTo(x - size, y - size * 0.3);
+        ctx.lineTo(x + size * 0.3, y - size * 0.3);
+        ctx.lineTo(x + size * 0.3, y - size * 0.7);
+        ctx.closePath();
+        break;
+
+      case "clover":
+        // Trèfle à 4 feuilles composé de 4 cercles
+        const leafRadius = size * 0.5;
+        // Feuille du haut
+        ctx.arc(x, y - size * 0.6, leafRadius, 0, Math.PI * 2);
+        ctx.moveTo(x + leafRadius * 2 + size * 0.6, y);
+        // Feuille de droite
+        ctx.arc(x + size * 0.6, y, leafRadius, 0, Math.PI * 2);
+        ctx.moveTo(x + leafRadius * 2, y + size * 0.6);
+        // Feuille du bas
+        ctx.arc(x, y + size * 0.6, leafRadius, 0, Math.PI * 2);
+        ctx.moveTo(x - leafRadius * 2 - size * 0.6, y);
+        // Feuille de gauche
+        ctx.arc(x - size * 0.6, y, leafRadius, 0, Math.PI * 2);
+        // Tige au centre
+        ctx.moveTo(x - size * 0.1, y);
+        ctx.lineTo(x - size * 0.1, y + size * 1.2);
+        ctx.lineTo(x + size * 0.1, y + size * 1.2);
+        ctx.lineTo(x + size * 0.1, y);
         break;
     }
 

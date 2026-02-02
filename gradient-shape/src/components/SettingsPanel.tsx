@@ -1,4 +1,5 @@
 import { useGradientStudio } from "../providers";
+import { RandomButton } from "./RandomButton";
 
 export function SettingsPanel() {
   const {
@@ -25,13 +26,7 @@ export function SettingsPanel() {
     <div className="bg-[#7B2FBE] text-white brutal-border brutal-shadow p-3">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-bold uppercase">Réglages</h2>
-        <button
-          onClick={randomizeSettings}
-          className="brutal-border-thin brutal-shadow-xs p-1 bg-white hover:bg-[#FFFDE7] text-lg"
-          title="Randomiser réglages"
-        >
-          🎲
-        </button>
+        <RandomButton onClick={randomizeSettings} />
       </div>
 
       <div className="mb-2">
