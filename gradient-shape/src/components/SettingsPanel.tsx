@@ -15,8 +15,8 @@ export function SettingsPanel() {
   } = useGradientStudio();
 
   const randomizeSettings = () => {
-    setNoiseIntensity(Math.floor(Math.random() * 8) + 1);
-    setNoiseScale(Math.floor(Math.random() * 60) + 60);
+    setNoiseIntensity(Math.floor(Math.random() * 100));
+    setNoiseScale(Math.floor(Math.random() * 10));
     setRotation(Math.floor(Math.random() * 360));
     setBlur(Math.floor(Math.random() * 30) + 30);
   };
@@ -37,12 +37,12 @@ export function SettingsPanel() {
       <div className="mb-2">
         <label className="block mb-1 font-bold text-sm flex justify-between">
           <span>NOISE</span>
-          <span>{noiseIntensity}px</span>
+          <span>{noiseIntensity}%</span>
         </label>
         <input
           type="range"
           min="0"
-          max="8"
+          max="100"
           value={noiseIntensity}
           onChange={(e) => setNoiseIntensity(parseInt(e.target.value))}
         />
@@ -51,12 +51,12 @@ export function SettingsPanel() {
       <div className="mb-2">
         <label className="block mb-1 font-bold text-sm flex justify-between">
           <span>ÉCHELLE NOISE</span>
-          <span>{noiseScale}</span>
+          <span>{noiseScale}px</span>
         </label>
         <input
           type="range"
-          min="30"
-          max="150"
+          min="0"
+          max="10"
           value={noiseScale}
           onChange={(e) => setNoiseScale(parseInt(e.target.value))}
         />
