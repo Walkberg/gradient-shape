@@ -40,6 +40,10 @@ export function GradientShapeStudio(): JSX.Element {
         <div className="flex flex-col gap-3">
           <ActionHeader />
           <CanvasDisplay />
+          <span className="text-s text-gray-500 text-center">
+            Appuyez sur <strong>espace</strong> pour générer un nouveau dégradé
+            aléatoire
+          </span>
         </div>
         <EditPanel />
       </div>
